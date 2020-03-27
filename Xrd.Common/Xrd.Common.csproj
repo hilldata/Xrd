@@ -5,4 +5,8 @@
     <RootNamespace>Xrd</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
+  </ItemGroup>
+
 </Project>
