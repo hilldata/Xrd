@@ -8,6 +8,12 @@ namespace Xrd {
 	/// <remarks>Used primarily for HMAC hashing and change-tracking</remarks>
 	public static class FastHashExtensions {
 		/// <summary>
+		/// An array that represents Guid.Empty. 
+		/// Used as return value for inputs that are null or empty.
+		/// </summary>
+		public static byte[] EmptyArray => new byte[16];
+
+		/// <summary>
 		/// Calculate a "fast-hash" value using the <see cref="M3aHash"/>
 		/// </summary>
 		/// <param name="vs">The binary data to hash.</param>
@@ -15,7 +21,7 @@ namespace Xrd {
 		/// <returns>A "fast hash" of the input.</returns>
 		public static byte[] FastHash(this byte[] vs, uint? seed = null) {
 			if (vs == null)
-				return null;
+				return EmptyArray;
 			M3aHash m3AHash = new M3aHash(seed);
 			return m3AHash.ComputeHash(vs);
 		}
@@ -28,7 +34,7 @@ namespace Xrd {
 		/// <returns>A "fast-hash" of the input.</returns>
 		public static byte[] FastHash(this string vs, uint? seed = null) =>
 			string.IsNullOrWhiteSpace(vs)
-			? null
+			? EmptyArray
 			: Encoding.UTF8.GetBytes(vs).FastHash(seed);
 
 		/// <summary>
