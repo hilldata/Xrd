@@ -36,6 +36,10 @@ namespace Xrd.Collections {
 				throw new ArgumentNullException(nameof(ts));
 			if (item == null)
 				return false;
+			if(item is INullable nullable) {
+				if (nullable.IsValueNull)
+					return false;
+			}
 			if (enforceUnique && ts.Contains(item))
 				return false;
 
