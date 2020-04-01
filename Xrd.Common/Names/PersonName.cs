@@ -261,6 +261,8 @@ namespace Xrd.Names {
 		private const string PAREN1 = "(";
 		private const string PAREN2 = ") ";
 
+		public override string ToString() => ToFullName(includedFields: PersonNameProperties.First | PersonNameProperties.Last | PersonNameProperties.Middle | PersonNameProperties.Nickname | PersonNameProperties.Prefix | PersonNameProperties.Suffix);
+
 		/// <summary>
 		/// Build a person's formatted full name for display using the provided criteria.
 		/// </summary>

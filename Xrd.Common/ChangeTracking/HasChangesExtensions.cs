@@ -43,7 +43,7 @@ namespace Xrd.ChangeTracking {
 		public static bool? IsLengthDirty(this int original, int current) {
 			if (original != current)
 				return true;
-			else if (original == 0) // If both lengths are zeroriginal, then they are the NOT different
+			else if (original == 0) // If both lengths are zero, then they are the NOT different
 				return false;
 			else
 				return null;
@@ -59,6 +59,13 @@ namespace Xrd.ChangeTracking {
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this bool original, bool current) =>
 			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
 		public static bool HasChanges(this bool? original, bool? current) =>
 			!original.Equals(current);
 
@@ -71,6 +78,13 @@ namespace Xrd.ChangeTracking {
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this byte original, byte current) =>
 			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
 		public static bool HasChanges(this byte? original, byte? current) =>
 			!original.Equals(current);
 
@@ -90,8 +104,28 @@ namespace Xrd.ChangeTracking {
 		/// <param name="current">The current value</param>
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
+		public static bool HasChanges(this sbyte? original, sbyte? current) =>
+			!original.Equals(current);
+
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
 		public static bool HasChanges(this char original, char current) =>
 			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this char? original, char? current) =>
+			!original.Equals(current);
+
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -108,8 +142,28 @@ namespace Xrd.ChangeTracking {
 		/// <param name="current">The current value</param>
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
+		public static bool HasChanges(this short? original, short? current) =>
+			!original.Equals(current);
+
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
 		public static bool HasChanges(this ushort original, ushort current) =>
 			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this ushort? original, ushort? current) =>
+			!original.Equals(current);
+
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -126,8 +180,28 @@ namespace Xrd.ChangeTracking {
 		/// <param name="current">The current value</param>
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
+		public static bool HasChanges(this int? original, int? current) =>
+			!original.Equals(current);
+
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
 		public static bool HasChanges(this uint original, uint current) =>
 			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this uint? original, uint? current) =>
+			!original.Equals(current);
+
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -144,6 +218,16 @@ namespace Xrd.ChangeTracking {
 		/// <param name="current">The current value</param>
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
+		public static bool HasChanges(this long? original, long? current) =>
+			!original.Equals(current);
+
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
 		public static bool HasChanges(this ulong original, ulong current) =>
 			!original.Equals(current);
 		/// <summary>
@@ -153,8 +237,10 @@ namespace Xrd.ChangeTracking {
 		/// <param name="current">The current value</param>
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
-		public static bool HasChanges(this DateTime original, DateTime current) =>
-			!original.Ticks.Equals(current.Ticks);
+		public static bool HasChanges(this ulong? original, ulong? current) =>
+			!original.Equals(current);
+
+
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -162,8 +248,92 @@ namespace Xrd.ChangeTracking {
 		/// <param name="current">The current value</param>
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
+		public static bool HasChanges(this float original, float current) =>
+			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this float? original, float? current) =>
+			!original.Equals(current);
+
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this double original, double current) =>
+			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this double? original, double? current) =>
+			!original.Equals(current);
+
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this decimal original, decimal current) =>
+			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this decimal? original, decimal? current) =>
+			!original.Equals(current);
+
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this DateTime original, DateTime current) =>
+			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this DateTime? original, DateTime? current) =>
+			!original.Equals(current);
+
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
 		public static bool HasChanges(this TimeSpan original, TimeSpan current) =>
-			!original.Ticks.Equals(current.Ticks);
+			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this TimeSpan? original, TimeSpan? current) =>
+			!original.Equals(current);
 
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
@@ -187,6 +357,41 @@ namespace Xrd.ChangeTracking {
 			return false;
 		}
 
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this Guid original, Guid current) =>
+			!original.Equals(current);
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <param name="original">The original value</param>
+		/// <param name="current">The current value</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges(this Guid? original, Guid? current) =>
+			!original.Equals(current);
+
+		/// <summary>
+		/// Test method implemented to verify that stepping through each character and breaking on a
+		/// mis-match is indeed faster than <see cref="String.Equals(string)"/>
+		/// </summary>
+		/// <param name="original">original value</param>
+		/// <param name="current">current value</param>
+		/// <returns>False if no changes were detected, or <see langword="true"/>if change were detected</returns>
+		[Obsolete("Use the HasChanges(string,string) method instead. The custom 'IsNullableDirty', " +
+			"'IsLengthDirty' then stepping through each character are significantly faster than " +
+			"'String.Equals' - Also, 'String.Equals' does not allow for null on the left-hand input.")]
+		public static bool IsStringDirty(this string original, string current) {
+			bool? tC = original.IsNullableDirty(current);
+			if (tC.HasValue)
+				return tC.Value;
+			return !original.Equals(current);
+		}
+
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -196,6 +401,10 @@ namespace Xrd.ChangeTracking {
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
 		public static bool HasChanges<T>(this T original, T current) {
+			Type t = typeof(T);
+			if (t.Name.StartsWith("Nullable"))
+				return !original.Equals(current);
+
 			bool? tempChecks = original.IsNullableDirty(current);
 			if (tempChecks.HasValue)
 				return tempChecks.Value;
@@ -208,7 +417,7 @@ namespace Xrd.ChangeTracking {
 				sO = Newtonsoft.Json.JsonConvert.SerializeObject(original);
 				sC = Newtonsoft.Json.JsonConvert.SerializeObject(current);
 			} else {
-				sC = original.ToString();
+				sC = current.ToString();
 			}
 			return sO.HasChanges(sC);
 		}
