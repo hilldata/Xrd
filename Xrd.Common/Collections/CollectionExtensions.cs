@@ -101,7 +101,7 @@ namespace Xrd.Collections {
 		/// <summary>
 		/// JScript splice function
 		/// </summary>
-		/// <typeparam name="T">Generic type containing in the list.</typeparam>
+		/// <typeparam name="T">Generic type contained in the list.</typeparam>
 		/// <param name="input">The list of objects.</param>
 		/// <param name="start">The starting position.</param>
 		/// <param name="count">The number of items to remove</param>
@@ -129,6 +129,8 @@ namespace Xrd.Collections {
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (list.IsNullOrEmpty())
 				throw new ArgumentNullException(nameof(list));
+			if (index > list.Count - 1)
+				throw new ArgumentOutOfRangeException(nameof(index));
 			T item = list[index];
 			list.Remove(item);
 			list.Insert(index - 1, item);
@@ -143,7 +145,7 @@ namespace Xrd.Collections {
 		public static void MoveDown<T>(this IList<T> list, int index) {
 			if (list.IsNullOrEmpty())
 				throw new ArgumentNullException(nameof(list));
-			if (index > list.Count - 2)
+			if (index > list.Count - 2 || index < 0)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			T item = list[index];
 			list.Remove(item);

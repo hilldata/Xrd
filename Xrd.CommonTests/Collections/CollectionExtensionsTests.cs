@@ -71,6 +71,7 @@ namespace Xrd.Collections.Tests {
 			Assert.AreEqual(2, list.Count);
 		}
 
+		[TestMethod]
 		public void AddRangeIfNotNull_TestException() {
 			// Arrange
 			List<object> list = null;
@@ -100,6 +101,46 @@ namespace Xrd.Collections.Tests {
 
 			// Make sure list count is now 6
 			Assert.AreEqual(6, list.Count);
+		}
+
+		private static List<string> _list = new List<string>() { "zero", "one", "two", "three" };
+
+		[TestMethod]
+		public void MoveDown_TestExceptions() {
+			List<string> vs = null;
+			Assert.ThrowsException<ArgumentNullException>(() => vs.MoveDown(0));
+			vs = new List<string>();
+			Assert.ThrowsException<ArgumentNullException>(() => vs.MoveDown(0));
+			vs = new List<string>(_list);
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => vs.MoveDown(3));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => vs.MoveDown(-1));
+		}
+
+		[TestMethod]
+		public void MoveDown_Test() {
+			List<string> vs = new List<string>(_list);
+			vs.MoveDown(0);
+			Assert.AreEqual("one", vs[0]);
+			Assert.AreEqual("zero", vs[1]);
+		}
+
+		[TestMethod]
+		public void MoveUp_TestExceptions() {
+			List<string> vs = null;
+			Assert.ThrowsException<ArgumentNullException>(() => vs.MoveUp(1));
+			vs = new List<string>();
+			Assert.ThrowsException<ArgumentNullException>(() => vs.MoveUp(1));
+			vs = new List<string>(_list);
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => vs.MoveUp(0));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => vs.MoveUp(5));
+		}
+
+		[TestMethod]
+		public void MoveUp_Test() {
+			List<string> vs = new List<string>(_list);
+			vs.MoveUp(3);
+			Assert.AreEqual("three", vs[2]);
+			Assert.AreEqual("two", vs[3]);
 		}
 	}
 }
