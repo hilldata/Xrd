@@ -1,4 +1,5 @@
 ﻿using System;
+using Xrd.ChangeTracking;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,32 @@ namespace Xrd.Names {
 	/// <summary>
 	/// Structured person's name. Used to parse a text into a structured name.
 	/// </summary>
+	/// <example>
+	/// In order to correctly parse an Honorific Title (Mr., Ms., Dr.), it either needs to be located:
+	///		1) If Formatting Last/Family/Surname first, it must follow the comma, but proceed the given name.
+	///		2) If Formatting Given (Middle) Family name, it must be at the beginning of the input.
+	///	English patrimonial suffixes (Jr, II, IV, etc.) and SOME credential suffixes should be found 
+	///		whether or not they are proceeded by a comma.
+	///	Credentialing suffixes are guaranteed to be found if they are proceeded by a comma
+	/// 
+	/// Accepted input format orders for parsing/constructing a new instance. 
+	/// (Optional fields and associated comma are in paratheses.)
+	///		1) Last 
+	///			* A single word is always assigned to LAST name.
+	///		2) Last, (Prefix) First (Middle)(, Suffix)
+	///		3) (Prefix) First (Middle) Last(, Suffix)
+	///		
+	/// **Nicknames (enclosed in single- or double-quotes) are identified first, so location is immaterial.**
+	/// </example>
+	/// <remarks>
+	/// Legend for fields as they may be identified outside of the US:
+	///		Prefix:		Honorific Title/Prefix (Mr., Ms., Dr., etc)
+	///		First:		First/Given name (John, Juan, Johan, Ivan, etc.)
+	///		Middle:		Middle/Additional Names/Initials
+	///		Last:		Last/Family/Surname (Smith, Yeltzin, Gonzales, etc.)
+	///		Suffix:		Honorofic Suffix (patrimonial or credentials; e.g. Jr., Sr., FAACP, MD, DDS, etc.)
+	///		Nickname:	Preferred name or alias
+	/// </remarks>
 	public class PersonName {
 		public PersonName() { }
 		/// <summary>
@@ -19,7 +46,14 @@ namespace Xrd.Names {
 			if (string.IsNullOrWhiteSpace(text))
 				throw new ArgumentNullException(nameof(text));
 
+			// Temp value to be search/changed
 			string working = text.Trim();
+
+			// Eliminate all double-spaces.
+			while (working.Contains("  "))
+				working = working.Replace("  ", " ");
+
+			// Initialize variables
 			Prefix = string.Empty;
 			Last = string.Empty;
 			First = string.Empty;
@@ -44,14 +78,9 @@ namespace Xrd.Names {
 				}
 			}
 
-			// Check for known prefixes.
-			foreach (var prefix in Honorifics.ForParsingName) {
-				if (working.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) {
-					Prefix = prefix.Trim();
-					working = working.Substring(prefix.Length).Trim();
-				}
-			}
-
+			// Temp array for catching prefix
+			List<string> vsP = new List<string>();
+			
 			StringBuilder m = new StringBuilder();
 
 			// Check to see if text contains comma.
@@ -61,7 +90,18 @@ namespace Xrd.Names {
 				// If a space occurs before the comma, it's most likely formatted as [First Last, Suffix]
 				if (spaceInd > 0 && spaceInd < commaInd) {
 					Suffix = working.Substring(commaInd + 1).Trim();
-					var split = splitText(working.Substring(0, commaInd)).ToList();
+					working = working.Substring(0, commaInd);
+					// Check for known prefixes.
+					foreach (var prefix in Honorifics.ForParsingName) {
+						if (working.ToLower().StartsWith(prefix.ToLower())) {
+							vsP.Add(prefix);
+							working = working.Substring(prefix.Length).Trim();
+						}
+					}
+					Prefix = vsP.Concatenate(" ");
+					vsP.Clear();
+
+					var split = splitText(working).ToList();
 					if (split.Count > 2) {
 						First = split.First().Trim();
 						Last = split.Last().Trim();
@@ -79,6 +119,24 @@ namespace Xrd.Names {
 				} else { // If there is no space before the comma, it's most likely formatted as [Last, First]
 					Last = working.Substring(0, commaInd).Trim();
 					working = working.Substring(commaInd + 1).Trim();
+
+					// Check for known prefixes.
+					foreach (var prefix in Honorifics.ForParsingName) {
+						if (working.ToLower().StartsWith(prefix.ToLower())) {
+							vsP.Add(prefix);
+							working = working.Substring(prefix.Length).Trim();
+						}
+					}
+
+					Prefix = vsP.Concatenate(" ");
+					vsP.Clear();
+					// Check for additional comma. If exists, what follows is suffix
+					int index = working.IndexOf(",");
+					if(index >0) {
+						Suffix = working.Substring(index + 1).Trim();
+						working = working.Substring(0, index).Trim();
+					}
+
 					if (!working.Contains(" ")) {
 						First = working.Trim();
 					} else {
@@ -89,17 +147,22 @@ namespace Xrd.Names {
 							m.Append(s.Trim());
 						}
 						Middle = m.ToString().Trim();
-						// Check to see if there's another comma in the remainer, if so, what follows is a suffix
-						if (Middle.Contains(",")) {
-							Suffix = Middle.Substring(Middle.IndexOf(",") + 1).Trim();
-							Middle = Middle.Substring(0, Middle.IndexOf(",")).Trim();
-						}
 					}
 				}
 			} else { // No commas. Search for common suffixes and assume it's formatted as [First Last]
 				if (!working.Contains(" ")) {// No space. It's just a last name.
 					Last = working.Trim();
 				} else {
+					// Check for known prefixes.
+					foreach (var prefix in Honorifics.ForParsingName) {
+						if (working.ToLower().StartsWith(prefix.ToLower())) {
+							vsP.Add(prefix);
+							working = working.Substring(prefix.Length).Trim();
+						}
+					}
+					Prefix = vsP.Concatenate(" ");
+					vsP.Clear();
+
 					var split = splitText(working).ToList();
 					string suff = string.Empty;
 					foreach (var s in split) {
@@ -194,9 +257,9 @@ namespace Xrd.Names {
 		public string Nickname { get; set; }
 
 		/// <summary>
-		/// List of common personal suffixes.
+		/// List of common patrimonial and credentialing suffixes.
 		/// </summary>
-		public static List<string> CommonSuffixes => new List<string>() {
+		private static List<string> CommonSuffixes => new List<string>() {
 			"JR",
 			"JR.",
 			"SR",
@@ -210,48 +273,116 @@ namespace Xrd.Names {
 			"MD",
 			"M.D.",
 			"PHD",
-			"Ph.D.",
+			"PH.D.",
 			"DO",
-			"D.O."
+			"D.O.",
+			"DDS",
+			"D.D.S."
 		};
 
 		private string[] splitText(string text, char c = ' ') {
-			if (!text.Contains(" "))
+			if (!text.Contains(c))
 				return new string[] { text.Trim() };
 			return text.Split(new char[] { c }, StringSplitOptions.RemoveEmptyEntries);
+		}
+
+		private const char QUESTION = '?';
+		private string midInit {
+			get {
+				if (string.IsNullOrWhiteSpace(Middle))
+					return string.Empty;
+				if(Middle.Contains(" ")) {
+					StringBuilder sb = new StringBuilder();
+					var split = Middle.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+					foreach (var n in split)
+						sb.Append(n[0]);
+					return sb.ToString();
+				}
+				return Middle.Substring(0,1);
+			}
+		}
+		private string lastInit {
+			get {
+				if (string.IsNullOrWhiteSpace(Last))
+					return string.Empty;
+				if(Last.Contains(" ") || Last.Contains("-")) {
+					StringBuilder sb = new StringBuilder();
+					var split = Last.Split(new char[] { ' ', '-' }, StringSplitOptions.RemoveEmptyEntries);
+					foreach(var n in split) {
+						sb.Append(n[0]);
+					}
+						return sb.ToString();
+				}
+				return Last.Substring(0, 1);
+			}
 		}
 
 		/// <summary>
 		/// Gets the initials from the name
 		/// </summary>
-		/// <param name="maxLength">The maximum number of characters to include in the initials.</param>
+		/// <param name="maxLength">The maximum number of characters to include in the initials. (minimum == 2)</param>
 		/// <returns>The initials from the name.</returns>
+		/// <remarks>
+		/// Will always return at least 2 characters. Empty field values will be replaced with a question mark,
+		/// e.g. _ Hill => ?H; John _ => J?
+		/// </remarks>
 		public string ToInitials(int maxLength = 3) {
 			StringBuilder sb = new StringBuilder();
-			if (First.HasValue())
-				sb.Append(First[0]);
-			if (Middle.HasValue()) {
-				if (Middle.Contains(" ")) {
-					foreach (var v in splitText(Middle))
-						sb.Append(v.Trim()[0]);
-				} else
-					sb.Append(Middle[0]);
-			}
-			if (Last.HasValue()) {
-				if (Last.Contains(" ")) {
-					foreach (var v in splitText(Last))
-						sb.Append(v.Trim()[0]);
-				}
-			} else
-				sb.Append(Last[0]);
-
 			if (maxLength < 2)
 				maxLength = 2;
-			if (sb.Length > maxLength) {
-				while (sb.Length > maxLength)
-					sb.Remove(1, 1);
+			// if maxLength == 2, only concerned with First/Last
+			// If either are blank, replace with question mark (QUESTION)
+			if (maxLength == 2) {
+				if (First.HasValue())
+					sb.Append(First[0]);
+				else
+					sb.Append(QUESTION);
+
+				if (Last.HasValue())
+					sb.Append(Last[0]);
+				else
+					sb.Append(QUESTION);
+				return sb.ToString();
+			} else {
+				// First initial
+				if (First.HasValue()) {
+					sb.Append(First[0]);
+				}
+
+				// Middle initial
+				string mi = midInit;
+				if (mi.HasValue()) {
+					sb.Append(mi[0]);
+				}else {
+					// If there was no middle name and no first name, start with a question mark
+					if (sb.Length < 1)
+						sb.Append(QUESTION);
+				}
+
+				// Last initial(s)
+				string li = lastInit;
+				if (li.HasValue()) {
+					sb.Append(li);
+				}else {
+					sb.Append(QUESTION);
+				}
+				
+				// Make sure total length is not greater than max length.
+				if(sb.Length > maxLength) {
+					int i = sb.Length - maxLength;
+					sb.Remove(sb.Length - i, i);
+				} else if(sb.Length < maxLength && mi.Length >1) {
+					// Finally, check to see if maxLength is met. 
+					// If not, check to see if middle initials has more than one character.
+					// If so, insert each character until the maxLength is met.
+					int i = 1;
+					while(sb.Length < maxLength && i < mi.Length) {
+						sb.Insert(i + 1, mi[i]);
+						i++;
+					}
+				}
+				return sb.ToString();
 			}
-			return sb.ToString();
 		}
 
 		private const string COMMA = ", ";
@@ -265,6 +396,7 @@ namespace Xrd.Names {
 
 		/// <summary>
 		/// Build a person's formatted full name for display using the provided criteria.
+		/// *ALWAYS* includes first and last name (if present)
 		/// </summary>
 		/// <param name="orgName">The name of the organization the person is primarily associated with.</param>
 		/// <param name="includeMiddle">Should the middle name(s) be included in the result?</param>
@@ -273,12 +405,22 @@ namespace Xrd.Names {
 		/// <param name="includeNickname">Should the nickname be included in the result?</param>
 		/// <param name="lastFirst">Should the last/family name be listed first?</param>
 		/// <returns>The full name as computed from the provided criteria.</returns>
-		public string ToFullName(string orgName = null, bool includeMiddle = false, bool includePrefix = false, bool includeSuffix = true, bool includeNickname = true, bool lastFirst = true) {
+		public string ToFullName(string orgName = null,
+			bool includeMiddle = false, 
+			bool includePrefix = false, 
+			bool includeSuffix = false, 
+			bool includeNickname = false, 
+			bool lastFirst = true) {
 			StringBuilder sb = new StringBuilder();
 			if (lastFirst) {
 				if (Last.HasValue()) {
 					sb.Append(Last);
 					sb.Append(COMMA);
+				}
+				if (includePrefix && Prefix.HasValue()) {
+					sb.Append(SPACE);
+					sb.Append(Prefix);
+					sb.Append(SPACE);
 				}
 				if (First.HasValue()) {
 					sb.Append(First);
@@ -292,11 +434,6 @@ namespace Xrd.Names {
 				if (includeMiddle && Middle.HasValue()) {
 					sb.Append(Middle);
 					sb.Append(SPACE);
-				}
-				if (includePrefix && Prefix.HasValue()) {
-					sb.Append(PAREN1);
-					sb.Append(Prefix);
-					sb.Append(PAREN2);
 				}
 				if (includeSuffix && Suffix.HasValue()) {
 					sb.Append(COMMA);
@@ -336,12 +473,22 @@ namespace Xrd.Names {
 				sb.Append(PAREN2);
 			}
 
-			string res = sb.ToString().Trim();
+			string res = sb.ToString().Replace(" ,", ",");
 			while (res.EndsWith(","))
 				res = res.Substring(0, res.Length - 1);
-			return res;
+			while (res.Contains("  "))
+				res = res.Replace("  ", " ");
+			return res.Trim();
 		}
 
+		/// <summary>
+		/// Build a person's formatted full name for display using the provided criteria.
+		/// *ALWAYS* includes first and last name (if present)
+		/// </summary>
+		/// <param name="includedFields">The fields to include.</param>
+		/// <param name="orgName">The name of the organization the person is primarily associated with.</param>
+		/// <param name="lastFirst">Should the last/family name be listed first?</param>
+		/// <returns>The full name as computed from teh provided criteria</returns>
 		public string ToFullName(PersonNameProperties includedFields, string orgName = null, bool lastFirst = true) =>
 			ToFullName(orgName,
 				includeMiddle: includedFields.HasFlag(PersonNameProperties.Middle),
@@ -408,6 +555,45 @@ namespace Xrd.Names {
 				case PersonNameProperties.Prefix: return Prefix.HasValue() ? Prefix.Truncate(maxLen) : string.Empty;
 				case PersonNameProperties.Suffix: return Suffix.HasValue() ? Suffix.Truncate(50) : string.Empty;
 				default: return string.Empty;
+			}
+		}
+
+		/// <summary>
+		/// Is the specified object equivalent to this instance? (All fields identical)
+		/// </summary>
+		/// <param name="obj">The object to compare.</param>
+		/// <returns><see langword="true"/>, if the object is a <see cref="PersonName"/> and ALL fields are identical; otherwise, <see langword="false"/></returns>
+		public override bool Equals(object obj) {
+			if (!(obj is PersonName pn))
+				return false;
+
+			if (First.HasChanges(pn.First))
+				return false;
+			if (Last.HasChanges(pn.Last))
+				return false;
+			if (Middle.HasChanges(pn.Middle))
+				return false;
+			if (Prefix.HasChanges(pn.Prefix))
+				return false;
+			if (Suffix.HasChanges(pn.Suffix))
+				return false;
+			if (Nickname.HasChanges(pn.Nickname))
+				return false;
+			return true;
+		}
+
+		/// <summary>
+		/// Override of the <see cref="Object.GetHashCode"/> Method.
+		/// </summary>
+		/// <returns>A Hash-Code suitable for use in hashtables.</returns>
+		/// <remarks>Only considers the First, Middle, and Last names; ignores other fields.</remarks>
+		public override int GetHashCode() {
+			unchecked {
+				int hash = 17;
+				hash = hash * 23 + (First.HasValue() ? First.GetHashCode() : 0);
+				hash = hash * 23 + (Last.HasValue() ? Last.GetHashCode() : 0);
+				hash = hash * 23 + (Middle.HasValue() ? Middle.GetHashCode() : 0);
+				return hash;
 			}
 		}
 	}
