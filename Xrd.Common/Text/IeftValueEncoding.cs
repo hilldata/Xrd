@@ -86,16 +86,18 @@ namespace Xrd.Text {
 		public static string DecodeValue(string pString) {
 			if (string.IsNullOrWhiteSpace(pString))
 				return string.Empty;
-			string res = pString.Replace(NEWLINE, Environment.NewLine).Replace(NEWLINE2, Environment.NewLine);
+			int startInd = pString.StartsWith(QUOTE) ? 1 : 0;
+			int length = (pString.EndsWith(QUOTE) && !pString.EndsWith(ESC_QUOTE)) ? pString.Length - startInd - 1 : pString.Length - startInd;
+			string res = pString.Substring(startInd, length).Replace(NEWLINE, Environment.NewLine).Replace(NEWLINE2, Environment.NewLine);
 			res = res.Replace(ESC_SEMICOLON, SEMICOLON);
 			res = res.Replace(ESC_COMMA, COMMA);
 			res = res.Replace(ESC_QUOTE, QUOTE);
 			res = res.Replace(ESC_ESCAPE_CHAR, ESCAPE_CHAR);
-			if (res.StartsWith(QUOTE)) {
+			/*if (res.StartsWith(QUOTE)) {
 				res = res.Substring(1);
 				if (res.EndsWith(QUOTE) && !res.EndsWith(ESC_QUOTE))
 					res = res.Substring(0, res.Length - 1);
-			}
+			}*/
 			return res;
 		}
 
@@ -105,24 +107,24 @@ namespace Xrd.Text {
 		/// <param name="value">The plain value to encode.</param>
 		/// <returns>The value encoded for used in parameters.</returns>
 		public static string EncodeParameterValue(string value) {
-			string temp;
+			/*string temp;
 			if (value.Contains(QUOTE))
 				temp = value.Replace(QUOTE, MARKUP_QUOTE);
 			else
-				temp = value;
+				temp = value;*/
 
 			bool needQuote = false;
-			if (temp.Contains(COLON))
+			if (value.Contains(COLON))
 				needQuote = true;
-			if (temp.Contains(ESC_SEMICOLON))
+			if (value.Contains(SEMICOLON))
 				needQuote = true;
-			if (temp.Contains(COMMA))
+			if (value.Contains(COMMA))
 				needQuote = true;
 
 			if (needQuote)
-				return QUOTE + temp + QUOTE;
+				return QUOTE + value.Replace(QUOTE, MARKUP_QUOTE) + QUOTE;
 			else
-				return temp;
+				return value.Replace(QUOTE, MARKUP_QUOTE);
 		}
 
 		/// <summary>
@@ -216,8 +218,7 @@ namespace Xrd.Text {
 		/// <returns>A datetime value (or null, if the parse failed)</returns>
 		public static DateTime? ParseISO8601String(string input) {
 			// First, make sure that if the TimeZone is entered, it is 5 digits in length (includes the minutes-offset)
-			int index = -1;
-			index = input.IndexOf('+');
+			int index = input.IndexOf('+');
 			if (index < 0) {
 				if (input.ToUpper().StartsWith("T"))
 					index = input.IndexOf('-');
