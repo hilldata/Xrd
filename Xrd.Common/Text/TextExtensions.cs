@@ -203,7 +203,7 @@ namespace Xrd.Text {
 			"offspring",
 			"pyjamas",
 			"police",
-			"pendezvous",
+			"rendezvous",
 			"salmon",
 			"sheep",
 			"shrimp",
@@ -218,6 +218,7 @@ namespace Xrd.Text {
 		};
 		private static readonly Dictionary<string, string> IrregularNouns = new Dictionary<string, string>() {
 			{"agenda", "agendas" },
+			{"alley", "alleys" },
 			{"belief", "beliefs" },
 			{"chef", "chefs" },
 			{"chief", "chiefs" },
@@ -235,10 +236,14 @@ namespace Xrd.Text {
 			{"mouse", "mice" },
 			{"octopus", "octopuses" },
 			{"opus", "opera" },
+			{"ox", "oxen" },
 			{ "person", "people" },
 			{"photo", "photos" },
 			{"piano", "pianos" },
+			{"prefix", "prefixes" }, // Not a Latin root, so NOT => "ices"
+			{"radio", "radios" },
 			{"roof", "roofs" },
+			{"suffix", "suffixes" }, // Not a Latin root, so NOT => "ices"
 			{"tooth", "teeth" },
 			{"virus", "viruses" },
 			{"woman", "women" }
@@ -278,7 +283,7 @@ namespace Xrd.Text {
 			string temp = s.Trim().ToLower();
 
 			// First, check to see if already plural
-			if (temp.EndsWith("es") || (temp.FromEnd(0) == 's' && temp.FromEnd(1).IsConsonant()))
+			if (temp.EndsWith("es") || (temp.FromEnd(0) == 's' && (temp.FromEnd(1).IsConsonant() && temp.FromEnd(1) != 's')))
 				return s;
 
 			// Check identical plural/singular list
@@ -289,37 +294,52 @@ namespace Xrd.Text {
 
 			// Check irregular list
 			foreach (var irr in IrregularNouns) {
-				if (temp.EndsWith(irr.Key) || temp.EndsWith(irr.Value))
+				if (temp.Equals(irr.Key) || temp.Equals(irr.Value))
 					return s.DropFromEnd(irr.Key.Length - 1) + irr.Value.Substring(1);
 			}
 
-			// Apply rules
-			if (temp.EndsWith("a"))
-				return s + "e";
-			else if (temp.EndsWith("eau"))
-				return s + "x";
-			else if (temp.EndsWith("ex"))
+			#region Apply rules
+			// 1 ends in 'ex'
+			if (temp.EndsWith("ex"))
 				return s.DropFromEnd(2) + "ices";
-			else if (temp.EndsWith("f"))
-				return s.DropFromEnd(1) + "ves";
-			else if (temp.EndsWith("fe"))
-				return s.DropFromEnd(2) + "ves";
-			else if (temp.EndsWith("is"))
-				return s.DropFromEnd(2) + "es";
-			else if (temp.EndsWith("ix"))
-				return s.DropFromEnd(1) + "ces";
-			else if (temp.EndsWith("on"))
-				return s.DropFromEnd(2) + "a";
-			else if (temp.EndsWith("um"))
-				return s.DropFromEnd(2) + "a";
+			// 2 Ends in 'us'
 			else if (temp.EndsWith("us"))
 				return s.DropFromEnd(2) + "i";
-			else if (temp.EndsWith("ch") || temp.EndsWith("o") || temp.EndsWith("s") || temp.EndsWith("sh") || temp.EndsWith("ss") || temp.EndsWith("x") || temp.EndsWith("z"))
-				return s + "es";
-			else if (temp.EndsWith("y"))
-				return s.Substring(0, s.Length - 2) + "ies";
-			else
-				return s + "s";
+			// 3 Ends in 'is'
+			else if (temp.EndsWith("is"))
+				return s.DropFromEnd(2) + "es";
+			// 4 Ends in 'on'
+			else if (temp.EndsWith("on"))
+				return s.DropFromEnd(2) + "a";
+			// 5 Ends in 'um'
+			else if (temp.EndsWith("um"))
+				return s.DropFromEnd(2) + "a";
+			// 6 Ends in 'y'
+			else if(temp.EndsWith("y")) {
+				if (temp.FromEnd(1).IsConsonant())
+					return s.DropFromEnd(1) + "ies";
+				else
+					return s + "s";
+			}
+			
+			// 7 Add 'es'
+			string[] endings = new string[] { "ch", "o", "s", "sh", "x", "z" };
+			foreach (var end in endings) {
+				if (temp.EndsWith(end)) {
+					return s + "es";
+				}
+			}
+			// 8 Ends in 'f' or 'fe' => change to 've' and add 's'
+			endings = new string[] { "f", "fe" };
+			foreach(var end in endings) {
+				if(temp.EndsWith(end)) {
+					return s.DropFromEnd(end.Length) + "ves";
+				}
+			}
+
+			// 9 All others
+			return s + "s";
+			#endregion
 		}
 
 		/// <summary>
@@ -427,7 +447,9 @@ namespace Xrd.Text {
 		/// <param name="s">The string to split</param>
 		/// <returns>An array of strings.</returns>
 		public static string[] SplitOnWildcards(this string s) =>
-			s.Split(new char[] { MULTI_CHAR_WILDCARD, SINGLE_CHAR_WILDCARD }, StringSplitOptions.RemoveEmptyEntries);
+			string.IsNullOrWhiteSpace(s)
+			? null
+			: s.Split(new char[] { MULTI_CHAR_WILDCARD, SINGLE_CHAR_WILDCARD }, StringSplitOptions.RemoveEmptyEntries);
 
 		/// <summary>
 		/// Determines if a string matches a wildcard pattern.
@@ -633,6 +655,8 @@ namespace Xrd.Text {
 		/// <param name="text2">Second string</param>
 		/// <returns>The number of characters common to the start of each string.</returns>
 		public static int CommonPrefixLength(this string text1, string text2) {
+			if (!text1.HasValue() || !text2.HasValue())
+				return 0;
 			// Performance analysis: https://neil.fraser.name/news/2007/10/09/
 			int n = Math.Min(text1.Length, text2.Length);
 			for (int i = 0; i < n; i++) {
@@ -649,6 +673,8 @@ namespace Xrd.Text {
 		/// <param name="text2">Second string</param>
 		/// <returns>The number of characters common to the end of each string.</returns>
 		public static int CommonSuffixLength(this string text1, string text2) {
+			if (!text1.HasValue() || !text2.HasValue())
+				return 0;
 			// Performance analysis: https://neil.fraser.name/news/2007/10/09/
 			int l1 = text1.Length;
 			int l2 = text2.Length;
