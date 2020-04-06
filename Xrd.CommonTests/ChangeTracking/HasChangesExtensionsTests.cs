@@ -27,6 +27,7 @@ namespace Xrd.ChangeTracking.Tests {
 		/// Used to time the Framework's String.Equals method
 		/// </summary>
 		[TestMethod]
+		[Obsolete]
 		public void IsStringDirtyTest() {
 			string o = null;
 			string c = null;
@@ -60,16 +61,7 @@ namespace Xrd.ChangeTracking.Tests {
 		}
 
 		[TestMethod]
-		/*// Nullable
-		[DataRow(typeof(object), null, null, false)]
-		// Bool
-		[DataRow(typeof(bool), true, true, false)]
-		[DataRow(typeof(bool), true, false, true)]
-		[DataRow(typeof(bool), false, true, true)]
-		// bool?
-		[DataRow(typeof(bool?), true, null, true)]*/
 		public void HasChangesTest() {
-			//HasChangesTestHelper<object>(null, null, false);
 			bool bO = true;
 			bool bC = true;
 			Assert.IsFalse(bO.HasChanges(bC));

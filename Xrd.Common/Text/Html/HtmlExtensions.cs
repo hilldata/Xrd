@@ -39,8 +39,7 @@ namespace Xrd.Text.Html {
 				return null;
 			string temp = text.Trim();
 
-			Tuple<int, int> indices = null;
-
+			Tuple<int, int> indices;
 			while ((indices = GetNextHtmlTagIndices(temp)) != null) {
 				temp = temp.Remove(indices.Item1, indices.Item2 - indices.Item1 + 1);
 			}

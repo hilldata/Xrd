@@ -38,6 +38,19 @@ namespace Xrd {
 			: Encoding.UTF8.GetBytes(vs).FastHash(seed);
 
 		/// <summary>
+		/// Calculate a "fast-hash" value using the <see cref="M3aHash"/>
+		/// </summary>
+		/// <param name="o">The object to hash.</param>
+		/// <param name="seed">An optional seed for the <see cref="M3aHash"/></param>
+		/// <returns>A "fast-hash" of the input.</returns>
+		public static byte[] FastHash(this object o, uint? seed = null) {
+			if (o == null)
+				return null;
+
+			return Newtonsoft.Json.JsonConvert.SerializeObject(o).FastHash(seed);
+		}
+
+		/// <summary>
 		/// Calculate the "fast-hash" value using the <see cref="M3aHash"/> and convert the result to a Guid for easy storage/manipulation.
 		/// </summary>
 		/// <param name="vs">The binary data to hash.</param>
@@ -54,5 +67,14 @@ namespace Xrd {
 		/// <returns>A Guid representation of the "fast-hash" of the input.</returns>
 		public static Guid HashGuid(this string vs, uint? seed = null) =>
 			new Guid(vs.FastHash(seed));
+
+		/// <summary>
+		/// Calculate the "fast-hash" value using the <see cref="M3aHash"/> and convert the result to a Guid for easy storage/manipulation.
+		/// </summary>
+		/// <param name="o">The object to hash.</param>
+		/// <param name="seed">An optional seed for the <see cref="M3aHash"/></param>
+		/// <returns>A Guid representation of the "fast-hash" of the input.</returns>
+		public static Guid HashGuid(this object o, uint? seed = null) =>
+			new Guid(o.FastHash(seed));
 	}
 }

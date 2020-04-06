@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xrd {
+namespace Xrd.Uuid {
 	/// <summary>
 	/// Static class used to generate "Sequential" Guids.
 	/// </summary>
