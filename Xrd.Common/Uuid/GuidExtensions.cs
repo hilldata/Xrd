@@ -140,25 +140,6 @@ namespace Xrd.Uuid {
 			}
 		}
 
-		private static int GetByteLength(params object[] value) {
-			if (value == null || value.Length < 1)
-				return 0;
-			int res = 0;
-			foreach (var v in value) {
-				if (v is null)
-					continue;
-				if (v is byte)
-					res += 1;
-				else if (v is short || v is ushort || v is char)
-					res += 2;
-				else if (v is double || v is long || v is ulong)
-					res += 8;
-				else
-					res += 4;
-			}
-			return res;
-		}
-
 		/// <summary>
 		/// Convert an array of objects into a <see cref="Guid"/>, but only those that will fit into 16 bytes.
 		/// </summary>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xrd {
+namespace Xrd.Encryption {
 	/// <summary>
 	/// Class used to generate deterministic pseudo-random numbers for
 	/// cryptographic/hashing operations. 

@@ -53,6 +53,36 @@ namespace Xrd {
 		}
 
 		/// <summary>
+		/// Get the total number of bytes required to convert the input into binary data (byte array).
+		/// </summary>
+		/// <param name="value">The array of objects to convert to binary.</param>
+		/// <returns>The total number of bytes required.</returns>
+		public static int GetByteLength(params object[] value) {
+			if (value.IsNullOrEmpty())
+				return 0;
+			int res = 0;
+			foreach (var v in value) {
+				if (v is null)
+					continue;
+				if (v is byte[] vs)
+					res += vs.Length;
+				else if (v is string s)
+					res += System.Text.Encoding.UTF8.GetBytes(s).Length;
+				else if (v is byte)
+					res += 1;
+				else if (v is short || v is ushort || v is char)
+					res += 2;
+				else if (v is double || v is long || v is ulong)
+					res += 8;
+				else if (v is DateTime || v is TimeSpan)
+					res += 8;
+				else
+					res += 4;
+			}
+			return res;
+		}
+
+		/// <summary>
 		/// Concatenate multiple separate binary data into a single array
 		/// </summary>
 		/// <param name="a1">The original array</param>
@@ -135,7 +165,9 @@ namespace Xrd {
 			if (data == null || data.Length == 0)
 				return;
 			Array.Clear(data, 0, data.Length);
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 			data = null;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
 		}
 
 		/// <summary>
