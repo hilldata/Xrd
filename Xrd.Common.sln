@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.Common", "Xrd.Common\Xrd.Common.csproj", "{96F01FE6-B877-41F1-BD7A-63FE09CC4454}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrd.Common", "Xrd.Common\Xrd.Common.csproj", "{96F01FE6-B877-41F1-BD7A-63FE09CC4454}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.CommonTests", "Xrd.CommonTests\Xrd.CommonTests.csproj", "{5C21D0E9-DC84-4E3A-A059-8BDFD2D22F14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrd.CommonTests", "Xrd.CommonTests\Xrd.CommonTests.csproj", "{5C21D0E9-DC84-4E3A-A059-8BDFD2D22F14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.Drawing", "Xrd.Drawing\Xrd.Drawing.csproj", "{E3BFDCAC-E709-4B82-AF0C-29C4BB68E396}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{5C21D0E9-DC84-4E3A-A059-8BDFD2D22F14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C21D0E9-DC84-4E3A-A059-8BDFD2D22F14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C21D0E9-DC84-4E3A-A059-8BDFD2D22F14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3BFDCAC-E709-4B82-AF0C-29C4BB68E396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3BFDCAC-E709-4B82-AF0C-29C4BB68E396}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3BFDCAC-E709-4B82-AF0C-29C4BB68E396}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3BFDCAC-E709-4B82-AF0C-29C4BB68E396}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
