@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Extension methods for file/file extensions/mime (media) types. FileReader static class for reading file paths/File Info references into a byte array, single string, or ReadOnlyCollection&lt;string&gt; objects.
+MimeType class contains list of well-known file/mime type associations</Description>
+  </PropertyGroup>
+
+</Project>

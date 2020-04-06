@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.Text.DiffMatchPatch", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.TypedUri", "Xrd.TypedUri\Xrd.TypedUri.csproj", "{432F8319-0AAC-4C98-9ED7-7569128EBA77}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.Files", "Xrd.Files\Xrd.Files.csproj", "{ED77CDB8-5E93-4B1A-8367-96D25A5F95F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{432F8319-0AAC-4C98-9ED7-7569128EBA77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{432F8319-0AAC-4C98-9ED7-7569128EBA77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{432F8319-0AAC-4C98-9ED7-7569128EBA77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED77CDB8-5E93-4B1A-8367-96D25A5F95F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED77CDB8-5E93-4B1A-8367-96D25A5F95F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED77CDB8-5E93-4B1A-8367-96D25A5F95F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED77CDB8-5E93-4B1A-8367-96D25A5F95F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

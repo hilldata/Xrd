@@ -3,7 +3,7 @@ using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Xrd.Tests {
+namespace Xrd.Uuid.Tests {
 	[TestClass()]
 	public class GuidSequentialTests {
 		[TestMethod()]
