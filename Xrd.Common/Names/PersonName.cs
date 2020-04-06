@@ -281,7 +281,7 @@ namespace Xrd.Names {
 		};
 
 		private string[] splitText(string text, char c = ' ') {
-			if (!text.Contains(c))
+			if (!text.Contains(c.ToString()))
 				return new string[] { text.Trim() };
 			return text.Split(new char[] { c }, StringSplitOptions.RemoveEmptyEntries);
 		}
