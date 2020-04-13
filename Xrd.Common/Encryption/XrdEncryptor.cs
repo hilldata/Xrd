@@ -57,53 +57,6 @@ namespace Xrd.Encryption {
 		#endregion
 
 		#region Public Methods
-		/*/// <summary>
-		/// Encrypt the specified binary data.
-		/// </summary>
-		/// <param name="data">The data to be encrypted.</param>
-		/// <param name="secondaryPassKey">The key to use to run an additional encryption pass on the data.</param>
-		/// <returns>The encrypted data.</returns>
-		public byte[] Encrypt(byte[] data, Guid secondaryPassKey) {
-			data.ValidateBinaryData();
-
-			temp = new byte[pFront];
-			random.NextBytes(temp);
-
-			int pBack = 0;
-			int lOrig = data.Length;
-			int lFinal = lOrig + 20 + pFront;
-			if (lFinal < 64)
-				lFinal = 64;
-			while (lFinal % 16 != 0) {
-				lFinal++;
-				pBack++;
-			}
-			buffer = new byte[lFinal];
-			byte[] hash = data.FastHash();
-
-			Array.Copy(temp, buffer, pFront);
-			Array.Copy(BitConverter.GetBytes(lOrig), 0, buffer, pFront, 4);
-			Array.Copy(hash, 0, buffer, pFront + 4, 16);
-			Array.Copy(data, 0, buffer, pFront + 20, lOrig);
-
-			if (pBack > 0) {
-				temp = new byte[pBack];
-				random.NextBytes(temp);
-				Array.Copy(temp, 0, buffer, pFront + 20 + lOrig, pBack);
-			}
-			temp.Wipe();
-			shuffle(true, key[10]);
-			transform(true);
-			shuffle(true, key[16]);
-			if (!secondaryPassKey.IsNullOrEmpty()) {
-				transform(true, secondaryPassKey.Value.ToByteArray());
-			}
-			byte[] res = new byte[lFinal];
-			Array.Copy(buffer, res, lFinal);
-			buffer.Wipe();
-			return res;
-		}*/
-
 		/// <summary>
 		/// Encrypt the specified binary data.
 		/// </summary>
@@ -201,41 +154,6 @@ namespace Xrd.Encryption {
 		/// <returns>The encrypted data.</returns>
 		public byte[] Encrypt(DateTime data, string secondaryPassKey) =>
 			Encrypt(data, secondaryPassKey.HashGuid());
-
-		/*/// <summary>
-		/// Decrypt the specified data.
-		/// </summary>
-		/// <param name="data">The encrypted data to be decrypted.</param>
-		/// <param name="secondaryPassKey">The (optional) key that was used to run an additional encryption pass on the original data.</param>
-		/// <returns>The decrypted data as an array of bytes.</returns>
-		/// <remarks>If an incorrect passkey or secondary passkey is supplied (detected when the decrypted data's length or hash do not match what was stored during the original encryption), garbage is returned.</remarks>
-		public byte[] Decrypt(byte[] data, Guid? secondaryPassKey = null) {
-			data.ValidateBinaryData();
-			buffer = new byte[data.Length];
-			Array.Copy(data, buffer, data.Length);
-
-			if (!secondaryPassKey.IsNullOrEmpty()) {
-				transform(false, secondaryPassKey.Value.ToByteArray());
-			}
-			shuffle(false, key[16]);
-			transform(false);
-			shuffle(false, key[10]);
-			int lOrig = BitConverter.ToInt32(buffer, pFront);
-			byte[] sHash = new byte[16];
-			Array.Copy(buffer, pFront + 4, sHash, 0, 16);
-			if (lOrig < 0 || lOrig > buffer.Length + 20 + pFront)
-				return random.GetBytes(data.Length);
-
-			temp = new byte[lOrig];
-			Array.Copy(buffer, pFront + 20, temp, 0, lOrig);
-			if (sHash.HasChanges(temp.FastHash()))
-				return random.GetBytes(data.Length);
-
-			byte[] res = new byte[lOrig];
-			Array.Copy(temp, res, lOrig);
-			temp.Wipe();
-			return res;
-		}*/
 
 		/// <summary>
 		/// Decrypt the specified data.

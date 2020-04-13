@@ -1,8 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Xrd.Encryption;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Xrd.Encryption.Tests {
 	[TestClass()]
@@ -57,6 +55,7 @@ namespace Xrd.Encryption.Tests {
 		public void GetAgeTest() {
 			DateTime source = new DateTime(2010, 4, 1, 1, 4, 3);
 			DateTimeEncrypted encrypted = new DateTimeEncrypted(source, false, k1, k2, k3, k4);
+			// Obviously, hard-coded value (10) only works until 1 Apr 2021...
 			Assert.AreEqual(10, (int)encrypted.GetAge(k1, k2, k3, k4));
 		}
 	}

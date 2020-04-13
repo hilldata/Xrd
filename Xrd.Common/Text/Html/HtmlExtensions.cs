@@ -41,9 +41,11 @@ namespace Xrd.Text.Html {
 
 			Tuple<int, int> indices;
 			while ((indices = GetNextHtmlTagIndices(temp)) != null) {
-				temp = temp.Remove(indices.Item1, indices.Item2 - indices.Item1 + 1);
+				temp = temp.Remove(indices.Item1, indices.Item2 - indices.Item1 + 1).Insert(indices.Item1, " ");
 			}
-			return temp;
+			while (temp.Contains("  "))
+				temp = temp.Replace("  ", " ");
+			return temp.Trim();
 		}
 
 		/// <summary>
