@@ -398,7 +398,8 @@ namespace Xrd.Text {
 
 		// Private method used to determine if the specified character is a breaking character (control, whitespace, punctuation, etc.)
 		private static bool IsBreakingChar(char charToCheck) {
-			return !char.IsLetterOrDigit(charToCheck);
+			return char.IsWhiteSpace(charToCheck);
+			//return !char.IsLetterOrDigit(charToCheck);
 		}
 
 		/// <summary>

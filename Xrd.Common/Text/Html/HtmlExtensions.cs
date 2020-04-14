@@ -1,4 +1,5 @@
 ﻿using System;
+using Xrd.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -51,7 +52,7 @@ namespace Xrd.Text.Html {
 		/// <summary>
 		/// Array of strings that HTML tags that should be converted to new line
 		/// </summary>
-		public static string[] TAGS_TO_NEWLINE = { "<br/>", "<br />", "<BR/>", "<BR />", "<br>", "<BR>", "</p>", "</P>" };
+		public static string[] TAGS_TO_NEWLINE = { "<br/>", "<br />", "<BR/>", "<BR />", "<br>", "<BR>", "<p>", "<P>", "</p>", "</P>" };
 		/// <summary>
 		/// HTML Paragraph tag
 		/// </summary>
@@ -60,6 +61,9 @@ namespace Xrd.Text.Html {
 		/// HTML encoded value for horizontal ellipsis
 		/// </summary>
 		public const string HTML_HORIZONTAL_ELLIPSIS = "&#8230;";
+
+		private const string DOUBLE_NEWLINE = "\r\n\r\n";
+		private const string SPACE_NEWLINE = " \r\n";
 
 		/// <summary>
 		/// Truncates the provided HTML text to the specified length.
@@ -82,16 +86,21 @@ namespace Xrd.Text.Html {
 			foreach (string s in TAGS_TO_NEWLINE)
 				res = res.Replace(s, Environment.NewLine);
 			res = res.StripTags();
+			while (res.Contains(DOUBLE_NEWLINE))
+				res = res.Replace(DOUBLE_NEWLINE, Environment.NewLine);
+			while (res.Contains(SPACE_NEWLINE))
+				res = res.Replace(SPACE_NEWLINE, Environment.NewLine);
 
-			res = res.Replace(Environment.NewLine, HTML_NEW_PARAGRAPH);
 
 			if (maxLength <= 0 || res.Length <= maxLength + 7)
-				return res;
+				return res.Replace(Environment.NewLine, HTML_NEW_PARAGRAPH);
 			int cutoff = res.IndexOfPreviousNonBreakingChar(maxLength - 7);
 			if (cutoff <= 0)
-				return res.Substring(0, maxLength - 7) + HTML_HORIZONTAL_ELLIPSIS;
+				res = res.Substring(0, maxLength - 7) + HTML_HORIZONTAL_ELLIPSIS;
 			else
-				return res.Substring(0, cutoff + 1) + HTML_HORIZONTAL_ELLIPSIS;
+				res = res.Substring(0, cutoff + 1) + HTML_HORIZONTAL_ELLIPSIS;
+
+			return res.Replace(Environment.NewLine, HTML_NEW_PARAGRAPH);
 		}
 
 		private static readonly string[] BODY_OPENING_TAGS = { "<body", "<BODY" };
@@ -158,7 +167,7 @@ namespace Xrd.Text.Html {
 				temp = "<" + temp;
 			if (!temp.EndsWith(">"))
 				temp += ">";
-			if (okValues != null && okValues.Count > 0) {
+			if (!okValues.IsNullOrEmpty()) {
 				if (okValues.Contains(temp))
 					return temp;
 				throw new ArgumentOutOfRangeException(nameof(tag));
@@ -170,11 +179,11 @@ namespace Xrd.Text.Html {
 		/// Make a string URL-safe by replacing space characters with %20
 		/// </summary>
 		/// <param name="input">The text to make URL-safe.</param>
-		/// <returns>The input with any space characters replaced with $20</returns>
+		/// <returns>The input with any space characters replaced with %20</returns>
 		public static string MakeStringUrlSafe(this string input) {
 			if (string.IsNullOrWhiteSpace(input))
 				throw new ArgumentNullException(nameof(input));
-			return input.Trim().Replace(" ", "&20");
+			return input.Trim().Replace(" ", "%20");
 		}
 
 		/// <summary>
@@ -253,7 +262,7 @@ namespace Xrd.Text.Html {
 			else
 				sb.Append(displayText.Trim());
 			sb.Append("</a>");
-			return sb.ToString();
+			return sb.ToString().Replace("+", "%20");
 		}
 	}
 }

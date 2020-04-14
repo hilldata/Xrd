@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-using Xrd.Uuid;
+using Xrd.Uid;
 
 namespace Xrd.Encryption {
 	/// <summary>

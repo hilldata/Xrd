@@ -2,7 +2,7 @@
 using Xrd.ChangeTracking;
 using System.Collections.Generic;
 using System.Text;
-using Xrd.Uuid;
+using Xrd.Uid;
 
 namespace Xrd.Encryption {
 	/// <summary>

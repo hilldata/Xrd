@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Xrd.Uuid {
+namespace Xrd.Uid {
 	/// <summary>
 	/// Extension Methods for Guids
 	/// </summary>
