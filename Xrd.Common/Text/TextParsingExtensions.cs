@@ -114,7 +114,11 @@ namespace Xrd.Text {
 				return res;
 			if (res.StartsWith("\""))
 				res = res.Substring(1);
+			if (res.StartsWith(OPEN_DBL_QUOTE.ToString()))
+				res = res.Substring(1);
 			if (res.EndsWith("\""))
+				res = res.Substring(0, res.Length - 1);
+			if (res.EndsWith(CLOS_DBL_QUOTE.ToString()))
 				res = res.Substring(0, res.Length - 1);
 			return res.Trim();
 		}
@@ -170,7 +174,7 @@ namespace Xrd.Text {
 		/// <param name="unQuoteText">A boolean value indicating whether or not to remove leading/trailing quotes from the resulting strings. Default is "no"</param>
 		/// <returns>A list of strings split at the specified characters.</returns>
 		public static List<string> NonQuotedSplit(this string text, char[] separators, StringSplitOptions splitOptions = StringSplitOptions.None, bool unQuoteText = false) {
-			if (separators == null || separators.Length < 1)
+			if (separators.IsNullOrEmpty())
 				throw new ArgumentNullException("separators");
 			if (string.IsNullOrWhiteSpace(text))
 				throw new ArgumentNullException(nameof(text));

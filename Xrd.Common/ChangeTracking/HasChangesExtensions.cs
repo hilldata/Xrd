@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Xrd.ChangeTracking {
 	/// <summary>
@@ -47,6 +49,16 @@ namespace Xrd.ChangeTracking {
 			else
 				return null;
 		}
+
+		private static bool? coreEnumerableTest<T>(this IEnumerable<T> original, IEnumerable<T> current) {
+			bool? tempChecks = original.IsNullableDirty(current);
+			if (tempChecks.HasValue)
+				return tempChecks.Value;
+			tempChecks = original.Count().IsLengthDirty(current.Count());
+			if (tempChecks.HasValue)
+				return tempChecks.Value;
+			return null;
+		}
 		#endregion
 
 		/// <summary>
@@ -58,6 +70,7 @@ namespace Xrd.ChangeTracking {
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this bool original, bool current) =>
 			!original.Equals(current);
+
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -77,6 +90,7 @@ namespace Xrd.ChangeTracking {
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this byte original, byte current) =>
 			!original.Equals(current);
+
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -96,6 +110,7 @@ namespace Xrd.ChangeTracking {
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this sbyte original, sbyte current) =>
 			!original.Equals(current);
+
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -115,6 +130,7 @@ namespace Xrd.ChangeTracking {
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this char original, char current) =>
 			!original.Equals(current);
+
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -239,7 +255,6 @@ namespace Xrd.ChangeTracking {
 		public static bool HasChanges(this ulong? original, ulong? current) =>
 			!original.Equals(current);
 
-
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -258,7 +273,6 @@ namespace Xrd.ChangeTracking {
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this float? original, float? current) =>
 			!original.Equals(current);
-
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -305,7 +319,7 @@ namespace Xrd.ChangeTracking {
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this DateTime original, DateTime current) =>
-			!original.Equals(current);
+			!original.Ticks.Equals(current.Ticks);
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -313,8 +327,12 @@ namespace Xrd.ChangeTracking {
 		/// <param name="current">The current value</param>
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
-		public static bool HasChanges(this DateTime? original, DateTime? current) =>
-			!original.Equals(current);
+		public static bool HasChanges(this DateTime? original, DateTime? current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+			return !original.Value.Ticks.Equals(current.Value.Ticks);
+		}
 
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -323,7 +341,7 @@ namespace Xrd.ChangeTracking {
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this TimeSpan original, TimeSpan current) =>
-			!original.Equals(current);
+			!original.Ticks.Equals(current.Ticks);
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -331,8 +349,12 @@ namespace Xrd.ChangeTracking {
 		/// <param name="current">The current value</param>
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
-		public static bool HasChanges(this TimeSpan? original, TimeSpan? current) =>
-			!original.Equals(current);
+		public static bool HasChanges(this TimeSpan? original, TimeSpan? current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+			return !original.Value.Ticks.Equals(current.Value.Ticks);
+		}
 
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
@@ -364,6 +386,18 @@ namespace Xrd.ChangeTracking {
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this Guid original, Guid current) =>
 			!original.Equals(current);
+		public static bool HasChanges(this IEnumerable<Guid> original, IEnumerable<Guid> current) {
+			var temp = original.coreEnumerableTest(current);
+			if (temp.HasValue)
+				return temp.Value;
+			int i = 0;
+			foreach (var o in original) {
+				if (o.HasChanges(current.ElementAt(i)))
+					return true;
+				i++;
+			}
+			return false;
+		}
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -371,8 +405,12 @@ namespace Xrd.ChangeTracking {
 		/// <param name="current">The current value</param>
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
-		public static bool HasChanges(this Guid? original, Guid? current) =>
-			!original.Equals(current);
+		public static bool HasChanges(this Guid? original, Guid? current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+			return original.Value.HasChanges(current.Value);
+		}
 
 		/// <summary>
 		/// Test method implemented to verify that stepping through each character and breaking on a
@@ -400,16 +438,56 @@ namespace Xrd.ChangeTracking {
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
 		public static bool HasChanges<T>(this T original, T current) {
-			Type t = typeof(T);
-			if (t.Name.StartsWith("Nullable"))
+			// Check for string
+			if (original is string oString && current is string cString)
+				return oString.HasChanges(cString);
+			
+			// Check for nullable structs
+			if(Nullable.GetUnderlyingType(typeof(T)) != null)
 				return !original.Equals(current);
 
+			// Check null
 			bool? tempChecks = original.IsNullableDirty(current);
 			if (tempChecks.HasValue)
 				return tempChecks.Value;
+			// Check for enumerables
 
-			// Try ToString(). If it's the fully qualified type name, use Json
-			// to get the values.
+			// Check for concrete type implementations
+			if (original is bool oBool && current is bool cBool)
+				return !oBool.Equals(cBool);
+			if (original is byte oByte && current is byte cByte)
+				return !oByte.Equals(cByte);
+			if (original is sbyte oSByte && current is sbyte cSByte)
+				return !oSByte.Equals(cSByte);
+			if (original is char oChar && current is char cChar)
+				return !oChar.Equals(cChar);
+			if (original is short oShort && current is short cShort)
+				return !oShort.Equals(cShort);
+			if (original is ushort oUShort && current is ushort cUShort)
+				return !oUShort.Equals(cUShort);
+			if (original is int oInt && current is int cInt)
+				return !oInt.Equals(cInt);
+			if (original is uint oUInt && current is uint cUInt)
+				return !oUInt.Equals(cUInt);
+			if (original is long oLong && current is long cLong)
+				return !oLong.Equals(cLong);
+			if (original is ulong oULong && current is ulong cULong)
+				return !oULong.Equals(cULong);
+			if (original is float oFloat && current is float cFloat)
+				return !oFloat.Equals(cFloat);
+			if (original is double oDouble && current is double cDouble)
+				return !oDouble.Equals(cDouble);
+			if (original is decimal oDecimal && current is decimal cDecimal)
+				return !oDecimal.Equals(cDecimal);
+			if (original is DateTime oDT && current is DateTime cDT)
+				return !oDT.Ticks.Equals(cDT.Ticks);
+			if (original is TimeSpan oTS && current is TimeSpan cTS)
+				return !oTS.Ticks.Equals(cTS.Ticks);
+			if (original is Guid oGuid && current is Guid cGuid)
+				return oGuid.HasChanges(cGuid);
+
+			// Concrete implementations exhausted. Try converting to ToString()
+			// If it's the fully qualified type name, use Json to get the values for comparison.
 			string sO = original.ToString();
 			string sC;
 			if (sO.EndsWith(original.GetType().FullName)) {
@@ -430,13 +508,31 @@ namespace Xrd.ChangeTracking {
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
 		public static bool HasChanges<T>(this T[] original, T[] current) {
-			bool? tempChecks = original.IsNullableDirty(current);
-			if (tempChecks.HasValue)
-				return tempChecks.Value;
-			tempChecks = original.Length.IsLengthDirty(current.Length);
-			if (tempChecks.HasValue)
-				return tempChecks.Value;
+			var temp = original.coreEnumerableTest(current);
+			if (temp.HasValue)
+				return temp.Value;
+
 			for(int i = 0; i< original.Length; i++) {
+				if (original[i].HasChanges(current[i]))
+					return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <typeparam name="T">Any type</typeparam>
+		/// <param name="original">The original List of values</param>
+		/// <param name="current">The current List of values</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges<T>(this List<T> original, List<T> current) {
+			bool? tempChecks = original.coreEnumerableTest(current);
+			if (tempChecks.HasValue)
+				return tempChecks.Value;
+
+			for(int i = 0; i < original.Count; i++) {
 				if (original[i].HasChanges(current[i]))
 					return true;
 			}
@@ -452,10 +548,7 @@ namespace Xrd.ChangeTracking {
 		/// <returns><see langword="false"/>, if no changes were detected, or true
 		/// if changes were detected.</returns>
 		public static bool HasChanges<T>(this IList<T> original, IList<T> current) {
-			bool? tempChecks = original.IsNullableDirty(current);
-			if (tempChecks.HasValue)
-				return tempChecks.Value;
-			tempChecks = original.Count.IsLengthDirty(current.Count);
+			bool? tempChecks = original.coreEnumerableTest(current);
 			if (tempChecks.HasValue)
 				return tempChecks.Value;
 
