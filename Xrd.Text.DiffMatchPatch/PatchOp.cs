@@ -54,7 +54,9 @@ namespace Xrd.Text.DiffMatchPatch {
 		public PatchOp Clone() =>
 			new PatchOp(Start1, Start2, Length1, Length2, Diffs);
 
-		public const string HEADER_REGEX_STRING = "^@@ -(\\d+),?(\\d*) \\+(\\d+),?(\\d*) @@$";
+		public const string PATCH_HEADER_WILDCARD = "@@ -*,* +*,* @@*";
+
+		const string HEADER_REGEX_STRING = "^@@ -(\\d+),?(\\d*) \\+(\\d+),?(\\d*) @@$";
 		internal static Regex PATCH_HEADER = new Regex(HEADER_REGEX_STRING);
 
 		internal static PatchOp Parse(string s) {

@@ -497,8 +497,7 @@ namespace Xrd.Text.DiffMatchPatch {
 		public static bool IsStringPatch(this string s) {
 			if (string.IsNullOrWhiteSpace(s))
 				return false;
-
-			return PatchOp.PATCH_HEADER.IsMatch(s.Truncate());
+			return s.Trim().EqualsWildcard(PatchOp.PATCH_HEADER_WILDCARD);
 		}
 		#endregion
 	}

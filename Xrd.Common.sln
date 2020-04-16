@@ -7,13 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrd.Common", "Xrd.Common\Xr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrd.CommonTests", "Xrd.CommonTests\Xrd.CommonTests.csproj", "{5C21D0E9-DC84-4E3A-A059-8BDFD2D22F14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.Drawing", "Xrd.Drawing\Xrd.Drawing.csproj", "{E3BFDCAC-E709-4B82-AF0C-29C4BB68E396}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrd.Drawing", "Xrd.Drawing\Xrd.Drawing.csproj", "{E3BFDCAC-E709-4B82-AF0C-29C4BB68E396}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.Text.DiffMatchPatch", "Xrd.Text.DiffMatchPatch\Xrd.Text.DiffMatchPatch.csproj", "{FAE03DF4-8D5D-49D9-8305-273C56F79591}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrd.Text.DiffMatchPatch", "Xrd.Text.DiffMatchPatch\Xrd.Text.DiffMatchPatch.csproj", "{FAE03DF4-8D5D-49D9-8305-273C56F79591}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.TypedUri", "Xrd.TypedUri\Xrd.TypedUri.csproj", "{432F8319-0AAC-4C98-9ED7-7569128EBA77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrd.TypedUri", "Xrd.TypedUri\Xrd.TypedUri.csproj", "{432F8319-0AAC-4C98-9ED7-7569128EBA77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.Files", "Xrd.Files\Xrd.Files.csproj", "{ED77CDB8-5E93-4B1A-8367-96D25A5F95F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrd.Files", "Xrd.Files\Xrd.Files.csproj", "{ED77CDB8-5E93-4B1A-8367-96D25A5F95F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.Text.DiffMatchPatchTests", "Xrd.Text.DiffMatchPatchTests\Xrd.Text.DiffMatchPatchTests.csproj", "{529EDD03-3AEF-414B-876D-CB5454F774EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{ED77CDB8-5E93-4B1A-8367-96D25A5F95F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED77CDB8-5E93-4B1A-8367-96D25A5F95F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED77CDB8-5E93-4B1A-8367-96D25A5F95F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{529EDD03-3AEF-414B-876D-CB5454F774EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{529EDD03-3AEF-414B-876D-CB5454F774EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{529EDD03-3AEF-414B-876D-CB5454F774EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{529EDD03-3AEF-414B-876D-CB5454F774EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
