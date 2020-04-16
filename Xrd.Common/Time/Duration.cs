@@ -84,7 +84,7 @@ namespace Xrd.Time {
 		public const int SIZE = 5;
 		#endregion
 
-		public override string ToString() => (Unit == DurationUnits.NOT_SET || Value == 0) ? "(not set)" : $"{Value} {Unit}s";
+		public override string ToString() => (Unit == DurationUnits.NOT_SET || Value == 0) ? "(not set)" : $"{Value} {Unit}{(Value != 1.0?"s":"")}";
 
 		private static bool IsParseStringValid(string s) {
 			if (string.IsNullOrWhiteSpace(s))

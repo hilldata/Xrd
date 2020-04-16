@@ -77,8 +77,11 @@ namespace Xrd.Time {
 				dt = dt.AddDays(1);
 				if (dt.DayOfWeek == weekday) {
 					c++;
-					if (c == count)
+					if (c == count) {
+						if (dt.Month != month)
+							return null;
 						return dt;
+					}
 				}
 			}
 			return null;
@@ -201,7 +204,7 @@ namespace Xrd.Time {
 				default:
 					break;
 			}
-			return hours + ((decimal)minutes / 60);
+			return hr + ((decimal)minutes / 60);
 		}
 
 		/// <summary>
@@ -213,7 +216,7 @@ namespace Xrd.Time {
 		public static decimal? RoundFractionalHour(this decimal? hours, RoundingIncrements roundTo = RoundingIncrements.Tenth) {
 			if (!hours.HasValue)
 				return null;
-			return hours.Value.RoundFractionalHour();
+			return hours.Value.RoundFractionalHour(roundTo);
 		}
 		#endregion
 
@@ -238,6 +241,12 @@ namespace Xrd.Time {
 			return new TimeSpan((int)hoursAsDecimal, hoursAsDecimal.validMinutes(), 0);
 		}
 
+		/// <summary>
+		/// Convert a TimeSpace to a fractional hours value.
+		/// </summary>
+		/// <param name="timeSpan">The TimeSpan to convert</param>
+		/// <param name="roundTo">The increment to round the fraction to.</param>
+		/// <returns>The original TimeSpace value as a fractional hours value, but rounded to the specified increment.</returns>
 		public static decimal ToDecimalHours(this TimeSpan timeSpan, RoundingIncrements roundTo = RoundingIncrements.Tenth) {
 			TimeSpan temp = timeSpan.RoundMinutes(roundTo);
 			return temp.Days * 24 +
@@ -245,10 +254,16 @@ namespace Xrd.Time {
 				(decimal)temp.Minutes / 60;
 		}
 
+		/// <summary>
+		/// Convert a TimeSpace to a fractional hours value.
+		/// </summary>
+		/// <param name="timeSpan">The TimeSpan to convert</param>
+		/// <param name="roundTo">The increment to round the fraction to.</param>
+		/// <returns>The original TimeSpace value as a fractional hours value, but rounded to the specified increment.</returns>
 		public static decimal? ToDecimalHours(this TimeSpan? timeSpan, RoundingIncrements roundTo = RoundingIncrements.Tenth) {
 			if (!timeSpan.HasValue)
 				return null;
-			return timeSpan.Value.ToDecimalHours();
+			return timeSpan.Value.ToDecimalHours(roundTo);
 		}
 
 		#region Trim minutes to < 60 Methods
@@ -451,7 +466,7 @@ namespace Xrd.Time {
 		/// <summary>
 		/// The base-datetime value to use when converting <see cref="DateTime"/> values to/from <see cref="UInt32"/>
 		/// </summary>
-		public static DateTime CURRENT_EPOCH = new DateTime(2010, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+		public static DateTime CURRENT_EPOCH = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
 		/// <summary>
 		/// Convert a <see cref="DateTime?"/> value to a <see cref="uint"/> (null values become zero)
@@ -462,9 +477,19 @@ namespace Xrd.Time {
 		public static uint ToUInt(this DateTime? dt, DateTime? offset = null) {
 			if (!dt.HasValue)
 				return 0;
+			return dt.Value.ToUInt(offset);
+		}
+
+		/// <summary>
+		/// Convert a <see cref="DateTime?"/> value to a <see cref="uint"/> (null values become zero)
+		/// </summary>
+		/// <param name="dt">The DateTime value to convert</param>
+		/// <param name="offset">The base starting point for the conversion. If NULL, the <see cref="CURRENT_EPOCH"/> constant is used.</param>
+		/// <returns>The input represented by a uint</returns>
+		public static uint ToUInt(this DateTime dt, DateTime? offset = null) {
 			if (offset == null)
 				offset = CURRENT_EPOCH;
-			TimeSpan ts = dt.Value - offset.Value;
+			TimeSpan ts = dt - offset.Value;
 			ushort days = (ushort)ts.TotalDays;
 			ushort min = (ushort)(ts.Hours * 60 + ts.Minutes);
 			byte sec = (byte)(ts.Seconds / 4);
