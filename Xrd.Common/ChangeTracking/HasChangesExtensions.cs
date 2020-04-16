@@ -61,6 +61,7 @@ namespace Xrd.ChangeTracking {
 		}
 		#endregion
 
+		#region Strongly-Typed Methods
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -386,18 +387,6 @@ namespace Xrd.ChangeTracking {
 		/// if changes were detected.</returns>
 		public static bool HasChanges(this Guid original, Guid current) =>
 			!original.Equals(current);
-		public static bool HasChanges(this IEnumerable<Guid> original, IEnumerable<Guid> current) {
-			var temp = original.coreEnumerableTest(current);
-			if (temp.HasValue)
-				return temp.Value;
-			int i = 0;
-			foreach (var o in original) {
-				if (o.HasChanges(current.ElementAt(i)))
-					return true;
-				i++;
-			}
-			return false;
-		}
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -411,6 +400,7 @@ namespace Xrd.ChangeTracking {
 				return temp.Value;
 			return original.Value.HasChanges(current.Value);
 		}
+		#endregion
 
 		/// <summary>
 		/// Test method implemented to verify that stepping through each character and breaking on a
@@ -429,6 +419,7 @@ namespace Xrd.ChangeTracking {
 			return !original.Equals(current);
 		}
 
+		#region Generic Method
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -498,7 +489,9 @@ namespace Xrd.ChangeTracking {
 			}
 			return sO.HasChanges(sC);
 		}
+		#endregion
 
+		#region Enumerable Methods
 		/// <summary>
 		/// Determine whether or not a value has changed over time.
 		/// </summary>
@@ -558,5 +551,238 @@ namespace Xrd.ChangeTracking {
 			}
 			return false;
 		}
+		#endregion
+
+		#region Tuple Methods
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <typeparam name="T1">Any type</typeparam>
+		/// <param name="original">The original Tuple</param>
+		/// <param name="current">The current Tuple</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges<T1>(this Tuple<T1> original, Tuple<T1> current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+
+			return original.Item1.HasChanges(current.Item1);
+		}
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <typeparam name="T1">Any type</typeparam>
+		/// <typeparam name="T2">Any type</typeparam>
+		/// <param name="original">The original Tuple</param>
+		/// <param name="current">The current Tuple</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges<T1,T2>(this Tuple<T1,T2> original, Tuple<T1,T2> current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+
+			if (original.Item1.HasChanges(current.Item1))
+				return true;
+			else if (original.Item2.HasChanges(current.Item2))
+				return true;
+			else
+				return false;
+		}
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <typeparam name="T1">Any type</typeparam>
+		/// <typeparam name="T2">Any type</typeparam>
+		/// <typeparam name="T3">Any type</typeparam>
+		/// <param name="original">The original Tuple</param>
+		/// <param name="current">The current Tuple</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges<T1, T2,T3>(this Tuple<T1, T2,T3> original, Tuple<T1, T2,T3> current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+
+			if (original.Item1.HasChanges(current.Item1))
+				return true;
+			else if (original.Item2.HasChanges(current.Item2))
+				return true;
+			else if (original.Item3.HasChanges(current.Item3))
+				return true;
+			else
+				return false;
+		}
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <typeparam name="T1">Any type</typeparam>
+		/// <typeparam name="T2">Any type</typeparam>
+		/// <typeparam name="T3">Any type</typeparam>
+		/// <typeparam name="T4">Any type</typeparam>
+		/// <typeparam name="T5">Any type</typeparam>
+		/// <typeparam name="T6">Any type</typeparam>
+		/// <typeparam name="T7">Any type</typeparam>
+		/// <typeparam name="TRest">Any Tuple type</typeparam>
+		/// <param name="original">The original Tuple</param>
+		/// <param name="current">The current Tuple</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges<T1, T2, T3, T4>(this Tuple<T1, T2, T3, T4> original, Tuple<T1, T2, T3, T4> current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+
+			if (original.Item1.HasChanges(current.Item1))
+				return true;
+			else if (original.Item2.HasChanges(current.Item2))
+				return true;
+			else if (original.Item3.HasChanges(current.Item3))
+				return true;
+			else if (original.Item4.HasChanges(current.Item4))
+				return true;
+			else
+				return false;
+		}
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <typeparam name="T1">Any type</typeparam>
+		/// <typeparam name="T2">Any type</typeparam>
+		/// <typeparam name="T3">Any type</typeparam>
+		/// <typeparam name="T4">Any type</typeparam>
+		/// <typeparam name="T5">Any type</typeparam>
+		/// <param name="original">The original Tuple</param>
+		/// <param name="current">The current Tuple</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges<T1, T2, T3, T4, T5>(this Tuple<T1, T2, T3, T4, T5> original, Tuple<T1, T2, T3, T4, T5> current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+
+			if (original.Item1.HasChanges(current.Item1))
+				return true;
+			else if (original.Item2.HasChanges(current.Item2))
+				return true;
+			else if (original.Item3.HasChanges(current.Item3))
+				return true;
+			else if (original.Item4.HasChanges(current.Item4))
+				return true;
+			else if (original.Item5.HasChanges(current.Item5))
+				return true;
+			else
+				return false;
+		}
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <typeparam name="T1">Any type</typeparam>
+		/// <typeparam name="T2">Any type</typeparam>
+		/// <typeparam name="T3">Any type</typeparam>
+		/// <typeparam name="T4">Any type</typeparam>
+		/// <typeparam name="T5">Any type</typeparam>
+		/// <typeparam name="T6">Any type</typeparam>
+		/// <param name="original">The original Tuple</param>
+		/// <param name="current">The current Tuple</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges<T1, T2, T3, T4, T5, T6>(this Tuple<T1, T2, T3, T4, T5, T6> original, Tuple<T1, T2, T3, T4, T5, T6> current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+
+			if (original.Item1.HasChanges(current.Item1))
+				return true;
+			else if (original.Item2.HasChanges(current.Item2))
+				return true;
+			else if (original.Item3.HasChanges(current.Item3))
+				return true;
+			else if (original.Item4.HasChanges(current.Item4))
+				return true;
+			else if (original.Item5.HasChanges(current.Item5))
+				return true;
+			else if (original.Item6.HasChanges(current.Item6))
+				return true;
+			else
+				return false;
+		}
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <typeparam name="T1">Any type</typeparam>
+		/// <typeparam name="T2">Any type</typeparam>
+		/// <typeparam name="T3">Any type</typeparam>
+		/// <typeparam name="T4">Any type</typeparam>
+		/// <typeparam name="T5">Any type</typeparam>
+		/// <typeparam name="T6">Any type</typeparam>
+		/// <typeparam name="T7">Any type</typeparam>
+		/// <param name="original">The original Tuple</param>
+		/// <param name="current">The current Tuple</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges<T1, T2, T3, T4, T5, T6, T7>(this Tuple<T1, T2, T3, T4, T5, T6, T7> original, Tuple<T1, T2, T3, T4, T5, T6, T7> current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+
+			if (original.Item1.HasChanges(current.Item1))
+				return true;
+			else if (original.Item2.HasChanges(current.Item2))
+				return true;
+			else if (original.Item3.HasChanges(current.Item3))
+				return true;
+			else if (original.Item4.HasChanges(current.Item4))
+				return true;
+			else if (original.Item5.HasChanges(current.Item5))
+				return true;
+			else if (original.Item6.HasChanges(current.Item6))
+				return true;
+			else if (original.Item7.HasChanges(current.Item7))
+				return true;
+			else
+				return false;
+		}
+		/// <summary>
+		/// Determine whether or not a value has changed over time.
+		/// </summary>
+		/// <typeparam name="T1">Any type</typeparam>
+		/// <typeparam name="T2">Any type</typeparam>
+		/// <typeparam name="T3">Any type</typeparam>
+		/// <typeparam name="T4">Any type</typeparam>
+		/// <typeparam name="T5">Any type</typeparam>
+		/// <typeparam name="T6">Any type</typeparam>
+		/// <typeparam name="T7">Any type</typeparam>
+		/// <typeparam name="TRest">Any Tuple type</typeparam>
+		/// <param name="original">The original Tuple</param>
+		/// <param name="current">The current Tuple</param>
+		/// <returns><see langword="false"/>, if no changes were detected, or true
+		/// if changes were detected.</returns>
+		public static bool HasChanges<T1, T2, T3,T4,T5,T6,T7,TRest>(this Tuple<T1, T2, T3, T4, T5, T6, T7, TRest> original, Tuple<T1, T2, T3, T4, T5, T6, T7, TRest> current) {
+			var temp = original.IsNullableDirty(current);
+			if (temp.HasValue)
+				return temp.Value;
+
+			if (original.Item1.HasChanges(current.Item1))
+				return true;
+			else if (original.Item2.HasChanges(current.Item2))
+				return true;
+			else if (original.Item3.HasChanges(current.Item3))
+				return true;
+			else if (original.Item4.HasChanges(current.Item4))
+				return true;
+			else if (original.Item5.HasChanges(current.Item5))
+				return true;
+			else if (original.Item6.HasChanges(current.Item6))
+				return true;
+			else if (original.Item7.HasChanges(current.Item7))
+				return true;
+			else if (original.Rest.HasChanges(current.Rest))
+				return true;
+			else
+				return false;
+		}
+		#endregion
 	}
 }

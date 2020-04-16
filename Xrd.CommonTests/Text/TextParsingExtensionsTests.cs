@@ -109,17 +109,13 @@ namespace Xrd.Text.Tests {
 		}
 
 		[TestMethod()]
-		public void NonQuotedSplitTest2() {
-			throw new NotImplementedException();
-		}
-
-		[TestMethod()]
-		public void NonQuotedSplitTest3() {
-			throw new NotImplementedException();
-		}
-
-		[TestMethod()]
 		public void NonQuotedSplitOnFirstTest() {
+			Tuple<string, string> expected = new Tuple<string, string>("Key", "Value:Parameter");
+			string input = null;
+			Assert.AreEqual(null, input.NonQuotedSplitOnFirst(';'));
+			input = string.Empty;
+			Assert.AreEqual(null, input.NonQuotedSplitOnFirst(';'));
+			input = "Key;Value:Parameter";
 			throw new NotImplementedException();
 		}
 
