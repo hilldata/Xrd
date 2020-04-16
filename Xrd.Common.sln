@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xrd.Files", "Xrd.Files\Xrd.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.Text.DiffMatchPatchTests", "Xrd.Text.DiffMatchPatchTests\Xrd.Text.DiffMatchPatchTests.csproj", "{529EDD03-3AEF-414B-876D-CB5454F774EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xrd.vCard", "Xrd.vCard\Xrd.vCard.csproj", "{7288734C-AD38-4C48-ABC2-06F4CFF80442}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{529EDD03-3AEF-414B-876D-CB5454F774EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{529EDD03-3AEF-414B-876D-CB5454F774EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{529EDD03-3AEF-414B-876D-CB5454F774EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7288734C-AD38-4C48-ABC2-06F4CFF80442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7288734C-AD38-4C48-ABC2-06F4CFF80442}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7288734C-AD38-4C48-ABC2-06F4CFF80442}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7288734C-AD38-4C48-ABC2-06F4CFF80442}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
