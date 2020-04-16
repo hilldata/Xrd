@@ -152,8 +152,10 @@ namespace Xrd {
 		public static bool ValidateBinaryData(this byte[] data, int? minLength = 1) {
 			if (minLength < 1)
 				minLength = 1;
-			if (data == null || data.Length < minLength)
+			if (data.IsNullOrEmpty())
 				throw new ArgumentNullException(nameof(data));
+			else if (data.Length < minLength)
+				throw new ArgumentException($"The binary data provided must be at least {minLength} bytes.", nameof(data));
 			return true;
 		}
 
@@ -161,23 +163,39 @@ namespace Xrd {
 		/// Clear a binary array and set it to null.
 		/// </summary>
 		/// <param name="data">The binary array to clear and remove references to.</param>
-		public static void Wipe(this byte[] data) {
+		public static byte[] Wipe(this byte[] data) {
 			if (data == null || data.Length == 0)
-				return;
+				return null;
 			Array.Clear(data, 0, data.Length);
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
-			data = null;
+			return null;
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
 		}
 
 		/// <summary>
 		/// Indicates whether the specified array is null or has no elements.
 		/// </summary>
-		/// <param name="data">The byte array to test.</param>
+		/// <param name="data">The array to test.</param>
 		/// <returns>True if the data parameter is null or has no elements; otherwise, false.</returns>
 		public static bool IsNullOrEmpty<T>(this T[] ts) =>
 			ts == null || ts.Length < 1
 			? true
 			: false;
+
+		/// <summary>
+		/// Indicates whether the specified array is null, has no elements, or all elements are equal to the default value.
+		/// </summary>
+		/// <typeparam name="T">Any type</typeparam>
+		/// <param name="ts">THe array to test.</param>
+		/// <returns>False if the array has any non-default elements; otherwise, true.</returns>
+		public static bool IsNullOrDefault<T>(this T[] ts) {
+			if (ts.IsNullOrEmpty())
+				return true;
+			foreach(var v in ts) {
+				if (!v.Equals(default(T)))
+					return false;
+			}
+			return true;
+		}
 	}
 }
