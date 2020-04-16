@@ -116,22 +116,45 @@ namespace Xrd.Text.Tests {
 			input = string.Empty;
 			Assert.AreEqual(null, input.NonQuotedSplitOnFirst(';'));
 			input = "Key;Value:Parameter";
-			throw new NotImplementedException();
+			Assert.IsFalse(expected.HasChanges(input.NonQuotedSplitOnFirst(';')));
+			Assert.IsTrue(expected.HasChanges(input.NonQuotedSplitOnFirst(':')));
+			expected = new Tuple<string, string>("Key;Value", "Parameter");
+			Assert.IsFalse(expected.HasChanges(input.NonQuotedSplitOnFirst(':')));
+			Assert.IsTrue(expected.HasChanges(input.NonQuotedSplitOnFirst(';')));
+			expected = new Tuple<string, string>("Value", "Parameter");
+			var split1 = input.NonQuotedSplitOnFirst(';');
+			Assert.IsFalse(expected.HasChanges(split1.Item2.NonQuotedSplitOnFirst(':')));
 		}
 
 		[TestMethod()]
 		public void EscapeQuotesTest() {
-			throw new NotImplementedException();
+			string input = null;
+			Assert.AreEqual(null, input.EscapeQuotes());
+			input = " \r\n";
+			Assert.AreEqual(null, input.EscapeQuotes());
+			input = "\"Key\"";
+			Assert.AreEqual("\\\"Key\\\"", input.EscapeQuotes());
 		}
 
 		[TestMethod()]
 		public void UnEscapeQuotesTest() {
-			throw new NotImplementedException();
+			string input = null;
+			Assert.AreEqual(null, input.UnEscapeQuotes());
+			input = " \r\n";
+			Assert.AreEqual(null, input.UnEscapeQuotes());
+			input = "\\\"Key\\\"";
+			Assert.AreEqual("\"Key\"", input.UnEscapeQuotes());
 		}
 
-		[TestMethod()]
-		public void QuoteTextTest() {
-			throw new NotImplementedException();
-		}
+		[DataTestMethod()]
+		[DataRow(null, null)]
+		[DataRow("", null)]
+		[DataRow("  ", null)]
+		[DataRow("Key", "\"Key\"")]
+		[DataRow("\"Key", "\"Key\"")]
+		[DataRow("\"Key\"", "\"Key\"")]
+		[DataRow("\"Key\\\"", "\"Key\\\"\"")]
+		public void QuoteTextTest(string input, string expected) =>
+			Assert.AreEqual(expected, input.QuoteText());
 	}
 }
